@@ -29,14 +29,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 typedef struct byte{
-    
+
     char enter;
     float again, bitps;
     float multiplicador; //provavelmente vou utilizar na ascenção
     char nome[64];
-    
+
 }bits;
 
 typedef struct acender{
@@ -62,7 +63,7 @@ typedef struct valor{// E o valor de cada item.
 typedef char nomebyte; // Vi q dava pra fazer isso e achei muito legal usar
 
 void menu(){// Menu referente ao menu principal
-    
+
     printf("<...> <...> <...> <...> <...> <...> <...>");
     printf("\n1 -> Cliker; \n2 -> Upgrades; \n3 -> Ascenção; \n4 -> Sair.\n");
     printf("<...> <...> <...> <...> <...> <...> <...>\n");
@@ -76,6 +77,8 @@ void menucompras(){// Menu referente ao shop
 
 int main() {
 
+    setlocale(LC_ALL,"");
+
     // Implementar a opção de salvar em arquivos
     //FILE *ptr;
     bits change;
@@ -84,55 +87,55 @@ int main() {
     multiplicar multi;
     vale valor;
     assinar acender;
-    
+
     int cont, choose = 0;
     int changename;
     int comprauni;
     float aplicar = 0.0;
-    
+
     change.again=0;
     change.bitps=0;
     acender.cont_asc=0;
-    
+
     printf("\nDeseja nomear seu PC?\n");
     printf("\nSim = (1); \nNão = (2)\n");
     scanf("%d", &changename);
     if(changename == 1){
-    
+
     fflush(stdin);
     printf("Pc name: ");
     fgets(change.nome, 64, stdin);
     fflush(stdin);
-        
+
     }
     else
         strcpy(change.nome, "default"); // Atribuindo um texto a uma variavel de tipo char
-    
+
     system("cls || clear");
-    
+
     do{// Laço usado para as escolhas referentes ao menu
-        
+
         menu();
         scanf("%d", &choose);
         switch (choose) {
             case 1:
-                
+
                 if(change.bitps>=0){ // Alocação feita para nomear o char principal
                 str = malloc (6 * sizeof (nomebyte));
                     str = "Byte";
-                    
+
                 }
                     printf("%s computer.\n", change.nome);
-                
+
                     do{ // Segundo laço exclusivo para contagem do 'bits'
                         printf("\nDigite -1 para sair!\n");
                         printf("\nDigite 0 ou 1:");
                         scanf("%d", &cont);
                         system("clear || cls");
-                        
+
                         if(cont==1 || cont==0){
                             if(change.bitps>=100){//Verificação para que o contador da ascenção.
-                                
+
                                 acender.cont_asc++;
                             }
                             change.bitps = change.bitps + aplicar;//Aplicação do multiplicador no contador atual.
@@ -140,7 +143,7 @@ int main() {
                             change.bitps++;//Contador simples.
                             printf("\n%0.2f %s\n", change.bitps, str);
                             printf("\nPontos de prestígio: %d\n", acender.cont_asc);
-                            
+
                             if (change.bitps>=8){
                                     str = malloc (7 * sizeof (nomebyte));
                                     str = "Bits";
@@ -156,23 +159,23 @@ int main() {
                                         str = "Gbytes";
                                     }
                             }
-                        
+
                     }while(cont!=-1);
-                
+
                 break;
-                
+
             case 2:
-                
+
                 do{// Terceiro laço para a escolha de 'compras'
                     menucompras();
                     printf("\nDigite -1 para sair!\n");
                     printf("Quantidade: %0.2f", change.bitps);
                     printf("\nQual ira comprar:");
                     scanf("%d", &comprauni);
-                    
+
                     switch (comprauni) {
                         case 1:
-                            
+
                             quantidade.disket=0;
                             multi.disket=0.15;
                             valor.disket=2;
@@ -188,11 +191,11 @@ int main() {
                                     change.bitps = change.bitps + aplicar;
                                     printf("\n%0.2f quant ", change.bitps);
                                     printf("\nValor do produto: %0.2f", valor.disket);
-                                  
+
                               }
                             else
                             break;
-                            
+
                         case 2:
                             quantidade.cd = 0;
                             multi.cd = 0.100;
@@ -301,12 +304,12 @@ int main() {
                 }while(comprauni!=-1);
                 break;
             case 3: //Ascenção com prestígios
-                
+
                 printf("\nPara 'acender' é necessário ter no minímo um ponto de de pretigío.\n");
                 printf("\nSeus pontos: %d\n", acender.cont_asc);
-                
-                
-                
+
+
+
                 break;
             default:
                 break;
