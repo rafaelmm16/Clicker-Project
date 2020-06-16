@@ -45,7 +45,7 @@ typedef struct acender{
     int cont_asc;
 }assinar;
 
-// Vamos lá, por enwquanto fiz essas 3 structs muito parecidas
+// Vamos lá, por enquanto fiz essas 3 structs muito parecidas
 // Porem cada uma faz uma coisa
 
 typedef struct compras{// Essa serve como um contador pra cada item;
