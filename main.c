@@ -80,7 +80,9 @@ int main() {
     setlocale(LC_ALL,"");
 
     // Implementar a opção de salvar em arquivos
-    //FILE *ptr;
+
+    FILE *fp; //Ponteiro pra arquivo
+
     bits change;
     nomebyte *str = NULL;
     comprar quantidade;
@@ -97,22 +99,28 @@ int main() {
     change.bitps=0;
     acender.cont_asc=0;
 
+    fp = fopen( "arquivo.txt" , "w" );
+
     printf("\nDeseja nomear seu PC?\n");
     printf("\nSim = (1); \nNão = (2)\n");
     scanf("%d", &changename);
+    fgets(change.nome, 64, stdin);
+    fwrite(change.nome , 64 , sizeof(char) , fp );
     if(changename == 1){
 
     fflush(stdin);
     printf("Pc name: ");
     fgets(change.nome, 64, stdin);
+    fwrite(change.nome , 64 , sizeof(char) , fp );
     fflush(stdin);
 
     }
     else
-        strcpy(change.nome, "default"); // Atribuindo um texto a uma variavel de tipo char
+        if(changename == 2){
+            strcpy(change.nome, "default"); // Atribuindo um texto a uma variavel de tipo char
 
-    system("cls || clear");
-
+            system("cls || clear");
+        }
     do{// Laço usado para as escolhas referentes ao menu
 
         menu();
@@ -125,6 +133,8 @@ int main() {
                     str = "Byte";
 
                 }
+                    system("cls || clear");
+
                     printf("%s computer.\n", change.nome);
 
                     do{ // Segundo laço exclusivo para contagem do 'bits'
@@ -315,5 +325,6 @@ int main() {
                 break;
         }
     }while(choose!=4);
+    fclose(fp);
     return 0;
 }
