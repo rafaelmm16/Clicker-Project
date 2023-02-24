@@ -25,6 +25,7 @@
 
  1 yottabyte (ou Ybytes) = 1024 zettabytes.
  */
+
 #include "clicker.c"
 
 #include <stdio.h>
@@ -156,10 +157,9 @@ int main() {
                                     printf("\n%d Diskets\n", quantidade.disket);
                                     aplicar = quantidade.disket * multi.disket;
                                     change.bitps = change.bitps + aplicar;
-                                    printf("\n%0.2f quant ", change.bitps);
-                                    printf("\nValor do produto: %0.2f", valor.disket);
-
-                              }
+                                    printf("\n%0.2f quant \n", change.bitps);
+                                    printf("\nValor do produto: %0.2f\n", valor.disket);
+                                }
                             else
                             break;
 

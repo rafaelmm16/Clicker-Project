@@ -19,9 +19,6 @@ typedef struct acender{
     int cont_asc;
 }assinar;
 
-// Vamos lá, por enquanto fiz essas 3 structs muito parecidas
-// Porem cada uma faz uma coisa
-
 typedef struct compras{// Essa serve como um contador pra cada item;
     int disket, cd, dvd, pendrive, mainfraime, hd, ram, internet;
 }comprar;
@@ -43,7 +40,7 @@ void menu(){// Menu referente ao menu principal
     printf("<...> <...> <...> <...> <...> <...> <...>\n");
 }
 void menucompras(){// Menu referente ao shop
-    system("cls || clear");
+    //system("cls || clear");
     printf("---------- Sh@p! ----------\n");
     printf("\n(1) Disket;\n(2) CD;\n(3) DVD;\n(4) Pendrive;\n(5) HD;\n(6) Mémoria Ram;\n(7) Internet;\n(8) Mainfraime;\n");
     printf("---------------------------\n");
