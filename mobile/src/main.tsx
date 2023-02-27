@@ -1,97 +1,111 @@
 import React, { useState, Component } from 'react';
-import { StyleSheet, Text, View, Dimensions, TouchableHighlight, Alert } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
-//import api from '../services/api';
 
-export default function main() {
-    const navigation = useNavigation();
+/*export function Main() {
+  const navigation = useNavigation();
 
+  function handleNavigateToProfile() {
+    navigation.navigate('Profile');
+  }
+};*/
+class App extends Component {
+  state = {
+    count: 0,
+  };
 
+  onPress = () => {
+    this.setState({
+      count: this.state.count + 1,
+    });
+  };
 
+  
+  handleNavigateToProfile() {
+    console.log('Click happened');
+  }
+
+  render() {
     return (
-        <View style={styles.container}>
-            <TouchableHighlight>
-                <View style={styles.button}>
-                    <Feather name="cpu" size={400} color="#F5AB35" />
-                    <Text style={styles.buttonText}>TouchableHighlight</Text>
-                </View>
-            </TouchableHighlight>
+      <View style={styles.container}>
+        <View style={styles.footer}>
+        <Text style={styles.footerText}> Click </Text>
+        <RectButton style={styles.icon}>
+          <Feather name="coffee" size={25} color="#F5AB35" />
+        </RectButton>
 
+        <Text style={styles.footerText}> Shop </Text>
+        <RectButton style={styles.icon}>
+          <Feather name="shopping-cart" size={25} color="#F5AB35" />
+        </RectButton>
 
-            <View style={styles.footer}>
-                <Text style={styles.footerText}> Click </Text>
-                <RectButton style={styles.createPointButton} onPress={main}>
-                    <Feather name="coffee" size={20} color="#F5AB35" />
-                </RectButton>
+        <Text style={styles.footerText}> Perfil </Text>
+        <RectButton style={styles.icon} onPress={this.handleNavigateToProfile}>
+          <Feather name="settings" size={25} color="#F5AB35" />
+        </RectButton>
+      </View>
 
-                <Text style={styles.footerText}> Shopping </Text>
-                <RectButton style={styles.createPointButton} onPress={main}>
-                    <Feather name="shopping-cart" size={20} color="#F5AB35" />
-                </RectButton>
-
-                <Text style={styles.footerText}> Perfil </Text>
-                <RectButton style={styles.createPointButton} onPress={main}>
-                    <Feather name="settings" size={20} color="#F5AB35" />
-                </RectButton>
-            </View>
+        <TouchableOpacity style={styles.button} onPress={this.onPress}>
+          <Feather name="cpu" size={200} color="#F5AB35" />
+        </TouchableOpacity>
+        <View>
+          <Text>You clicked {this.state.count} times</Text>
         </View>
-    )
-};
+
+      </View>
+    );
+  }
+}
+
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'grey',
-    },
-    footer: {
-        paddingLeft: 24,
-        paddingRight: 84,
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: 450,
-        height: 72,
-        top: 873,
-        left: 0,
-        backgroundColor: '#FFF',
-        borderRadius: 30,
-        elevation: 2,
-        justifyContent: 'space-between',
-
-        borderBottomEndRadius: 0,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        borderBottomStartRadius: 0,
-    },
-    footerText: {
-        textAlign: 'center',
-        //alignItems: 'center',
-        color: '#F5AB35',
-        //fontFamily: 'Nunito_700Bold',
-        //position: 'relative',
-        //left: 60,
-        //top: 22,
-        padding: 20,
-    },
-    createPointButton: {
-        alignItems: 'center',
-        left: 3.5,
-        right: 3.9,
-        height: 36,
-        justifyContent: 'space-between',
-    },
-    button: {
-        alignItems: 'center',
-        backgroundColor: '#DDDDDD',
-        padding: 10,
-        width: 300,
-        marginTop: 16,
-    },
-    buttonText: {
-        textAlign: 'center',
-        padding: 20,
-        color: 'white',
-    },
+  container: {
+    flex: 1,
+  },
+  footer: {
+    position: 'absolute',
+    width: 450,
+    height: 72,
+    top: 873,
+    backgroundColor: '#FFF',
+    elevation: 4,
+    justifyContent: 'space-around',
+    alignContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  footerText: {
+    //alignSelf: 'flex-end',
+    justifyContent: 'center',
+    left: 35,
+    top: 23
+    //padding: 4,
+  },
+  icon: {
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    alignSelf: 'center',
+    alignContent: 'stretch',
+    right: 40,
+    bottom: 5
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+    width: 300,
+    marginTop: 76,
+    justifyContent: 'space-evenly',
+    alignSelf: 'center',
+  },
+  buttonText: {
+    textAlign: 'center',
+    padding: 20,
+    color: 'white',
+  },
 });
+
+export default App;
