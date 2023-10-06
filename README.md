@@ -1,3 +1,3 @@
 # Clicker-Project
 
-Projeto pessoal no desenvolvimento de um mini jogo clicker
+Projeto de um game clicker
