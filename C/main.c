@@ -6,26 +6,6 @@
 //  Copyright © 2020 Rafael. All rights reserved.
 //
 
-/*
- 1 Byte = 8 bits
-
- 1 kilobyte (kB ou Kbytes) = 1024 bytes
-
- 1 megabyte (MB ou Mbytes) = 1024 kilobytes
-
- 1 gigabyte (GB ou Gbytes) = 1024 megabytes
-
- 1 terabyte (TB ou Tbytes) = 1024 gigabytes
-
- 1 petabyte (PB ou Pbytes) = 1024 terabytes
-
- 1 exabyte (EB ou Ebytes) = 1024 petabytes
-
- 1 zettabyte (ou Zbytes) = 1024 exabytes
-
- 1 yottabyte (ou Ybytes) = 1024 zettabytes.
- */
-
 #include "clicker.c"
 
 #include <stdio.h>
@@ -36,10 +16,6 @@
 int main() {
 
     setlocale(LC_ALL,"");
-
-    // Implementar a opção de salvar em arquivos
-
-    FILE *fp; //Ponteiro pra arquivo
 
     bits change;
     nomebyte *str = NULL;
@@ -57,19 +33,15 @@ int main() {
     change.bitps=0;
     acender.cont_asc=0;
 
-    fp = fopen( "arquivo.txt" , "w" );
-
     printf("\nDeseja nomear seu PC?\n");
     printf("\nSim = (1); \nNão = (2)\n");
     scanf("%d", &changename);
     fgets(change.nome, 64, stdin);
-    fwrite(change.nome , 64 , sizeof(char) , fp );
     if(changename == 1){
 
     fflush(stdin);
     printf("Pc name: ");
     fgets(change.nome, 64, stdin);
-    fwrite(change.nome , 64 , sizeof(char) , fp );
     fflush(stdin);
 
     }
@@ -192,7 +164,7 @@ int main() {
                                 aplicar = quantidade.dvd * multi.dvd;
                                 change.bitps = change.bitps + aplicar;
                                 printf("\n%0.2f quant ", change.bitps);
-                              }
+                            }
                             else
                             break;
                         case 4:
@@ -206,7 +178,7 @@ int main() {
                                 aplicar = quantidade.pendrive * multi.pendrive;
                                 change.bitps = change.bitps + aplicar;
                                 printf("\n%0.2f quant ", change.bitps);
-                              }
+                            }
                             else
                             break;
                         case 5:
@@ -220,7 +192,7 @@ int main() {
                                 aplicar = quantidade.hd * multi.hd;
                                 change.bitps = change.bitps + aplicar;
                                 printf("\n%0.2f quant ", change.bitps);
-                              }
+                            }
                             else
                             break;
                         case 6:
@@ -234,7 +206,7 @@ int main() {
                                 aplicar = quantidade.ram * multi.ram;
                                 change.bitps = change.bitps + aplicar;
                                 printf("\n%0.2f quant ", change.bitps);
-                              }
+                            }
                             else
                             break;
                         case 7:
@@ -248,7 +220,7 @@ int main() {
                                 aplicar = quantidade.internet * multi.internet;
                                 change.bitps = change.bitps + aplicar;
                                 printf("\n%0.2f quant ", change.bitps);
-                              }
+                            }
                             else
                                 break;
                         case 8:
@@ -275,13 +247,10 @@ int main() {
                 printf("\nPara 'acender' é necessário ter no minímo um ponto de de pretigío.\n");
                 printf("\nSeus pontos: %d\n", acender.cont_asc);
 
-
-
                 break;
             default:
                 break;
         }
     }while(choose!=4);
-    fclose(fp);
     return 0;
 }
