@@ -10,10 +10,6 @@ let clickPower = 1; // Inicialmente, o poder de clique é 1
 clickButton.addEventListener('click', () => {
     clickCount += clickPower; // Multiplica o clique pelo poder de clique atual
     clickCountDisplay.textContent = clickCount;
-
-    // Atualiza a quantidade de pontos de clique
-    clickPoints++;
-    clickPointsDisplay.textContent = clickPoints;
 });
 
 menuItems.forEach(item => {
@@ -25,16 +21,16 @@ menuItems.forEach(item => {
         const value = parseInt(valueElement.textContent);
 
         // Verifica se há pontos de clique suficientes para comprar o item
-        if (clickPoints >= value) {
+        if (clickCount >= value) {
             // Atualiza a quantidade de itens e os pontos de clique
             quantityElement.textContent = quantity + 1;
-            clickPoints -= value;
-            clickPointsDisplay.textContent = clickPoints; // Atualiza a exibição dos pontos de clique
+            clickCount -= value;
+            clickCountDisplay.textContent = clickCount; // Atualiza a exibição dos cliques
             
             // Atualiza o poder de clique para refletir a compra do item
             clickPower += 1;
         } else {
-            alert("Você não tem pontos de clique suficientes para comprar este item.");
+            alert("Você não tem cliques suficientes para comprar este item.");
         }
     });
 });
