@@ -4,5 +4,4 @@
 Projeto de um game clicker
 
 <br>
-
-<p>☕ Projeto que iniciei em 2020 em C, nesse periodo fiz uma versão muito experiemtal em typescript, mas não desejo continuar o projeto no momento 🔧.</p>
+<p>☕🔧....</p>
