@@ -1,10 +1,8 @@
 const clickButton = document.getElementById('click-button');
 const clickCountDisplay = document.getElementById('click-count');
 const menuItems = document.querySelectorAll('.sidebar li');
-const clickPointsDisplay = document.getElementById('click-points');
 
 let clickCount = 0;
-let clickPoints = 0;
 let clickPower = 1; // Inicialmente, o poder de clique é 1
 
 clickButton.addEventListener('click', () => {
