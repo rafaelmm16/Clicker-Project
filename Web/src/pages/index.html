@@ -6,32 +6,32 @@
     <title>Clicker Game</title>
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-blue-200 to-blue-500">
     <div class="container mx-auto px-4 py-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="main-content col-span-2 bg-white p-4 rounded shadow-md">
-                <h1 id="game-title" class="text-3xl font-bold mb-4 text-center">Clicker Game</h1>
+                <h1 id="game-title" class="text-3xl font-bold mb-4 text-center text-blue-900">Clicker Game</h1>
                 <div class="flex justify-center">
                     <input type="text" id="new-game-title" class="mr-2 px-4 py-2 border rounded-md" placeholder="Novo nome do jogo">
-                    <button id="change-title-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Alterar Nome</button>
+                    <button id="change-title-button" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700">Alterar Nome</button>
                 </div>
-                <div class="text-center"> <!-- Adicionado -->
-                    <button id="click-button" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Click!</button>
-                </div> <!-- Adicionado -->
+                <div class="text-center">
+                    <button id="click-button" class="bg-blue-600 text-white px-4 py-2 rounded mt-4 hover:bg-blue-700 focus:outline-none focus:bg-blue-700">Click!</button>
+                </div>
                 <p id="click-count" class="text-lg mt-4 text-center">0</p>
             </div>
             <div class="sidebar bg-white p-4 rounded shadow-md md:ml-auto">
-                <h2 class="text-xl font-bold mb-4 text-center">Menu de Compras</h2>
+                <h2 class="text-xl font-bold mb-4 text-center text-blue-900">Menu de Compras</h2>
                 <ul>
-                    <li id="disket" class="mb-2">Disket (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">10</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="disket">Comprar</button></li>
-                    <li id="cd" class="mb-2">CD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">20</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="cd">Comprar</button></li>
-                    <li id="dvd" class="mb-2">DVD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">30</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="dvd">Comprar</button></li>
-                    <li id="pendrive" class="mb-2">Pendrive (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">50</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="pendrive">Comprar</button></li>
-                    <li id="hd" class="mb-2">HD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">100</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="hd">Comprar</button></li>
-                    <li id="ram" class="mb-2">RAM (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">80</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="ram">Comprar</button></li>
-                    <li id="ssd" class="mb-2">SSD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">120</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="ssd">Comprar</button></li>
-                    <li id="internet" class="mb-2">Internet (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">200</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="internet">Comprar</button></li>
-                    <li id="mainframe" class="mb-2">Mainframe (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">500</span>) <button class="buy-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600" data-item="mainframe">Comprar</button></li>
+                    <li id="disket" class="mb-2">Disket (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">10</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="disket">Comprar</button></li>
+                    <li id="cd" class="mb-2">CD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">20</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="cd">Comprar</button></li>
+                    <li id="dvd" class="mb-2">DVD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">30</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="dvd">Comprar</button></li>
+                    <li id="pendrive" class="mb-2">Pendrive (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">50</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="pendrive">Comprar</button></li>
+                    <li id="hd" class="mb-2">HD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">100</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="hd">Comprar</button></li>
+                    <li id="ram" class="mb-2">RAM (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">80</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="ram">Comprar</button></li>
+                    <li id="ssd" class="mb-2">SSD (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">120</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="ssd">Comprar</button></li>
+                    <li id="internet" class="mb-2">Internet (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">200</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="internet">Comprar</button></li>
+                    <li id="mainframe" class="mb-2">Mainframe (Quantidade: <span class="quantity">0</span>, Valor: <span class="value">500</span>) <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="mainframe">Comprar</button></li>
                 </ul>
             </div>
         </div>
