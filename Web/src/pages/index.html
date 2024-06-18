@@ -9,66 +9,83 @@
 </head>
 
 <body class="bg-gradient-to-br from-blue-200 to-blue-500">
-    <div class="container mx-auto px-4 py-8">
+    <header class="bg-blue-700 text-white p-4 fixed w-full shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Clicker Game</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="#" class="hover:underline">Home</a></li>
+                    <li><a href="#" class="hover:underline">About</a></li>
+                    <li><a href="#" class="hover:underline">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-24">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="main-content col-span-2 bg-white p-4 rounded shadow-md">
+            <div class="main-content col-span-2 bg-white p-8 rounded-lg shadow-lg">
                 <h1 id="game-title" class="text-3xl font-bold mb-4 text-center text-blue-900">Clicker Game</h1>
-                <div class="flex justify-center">
-                    <input type="text" id="new-game-title" class="mr-2 px-4 py-2 border rounded-md"
-                        placeholder="Novo nome do jogo">
-                    <button id="change-title-button"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700">Alterar
-                        Nome</button>
+                <div class="flex justify-center mb-4">
+                    <input type="text" id="new-game-title" class="mr-2 px-4 py-2 border rounded-md focus:ring focus:ring-blue-500" placeholder="Novo nome do jogo">
+                    <button id="change-title-button" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700">Alterar Nome</button>
                 </div>
                 <div class="text-center">
-                    <button id="click-button"
-                        class="bg-blue-600 text-white px-4 py-2 rounded mt-4 hover:bg-blue-700 focus:outline-none focus:bg-blue-700">Click!</button>
+                    <button id="click-button" class="bg-blue-600 text-white px-4 py-2 rounded mt-4 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transform hover:scale-105 transition-transform duration-200">Click!</button>
                 </div>
                 <p id="click-count" class="text-lg mt-4 text-center">0</p>
             </div>
-            <div class="sidebar bg-white p-4 rounded shadow-md md:ml-auto">
+            <div class="sidebar bg-white p-8 rounded-lg shadow-lg md:ml-auto">
                 <h2 class="text-xl font-bold mb-4 text-center text-blue-900">Menu de Compras</h2>
-                <ul id="menu-compras" class="space-y-2">
-                    <li id="disket" class="flex justify-between items-center border-b py-2 mb-2">
+                <ul id="menu-compras" class="space-y-4">
+                    <li id="disket" class="flex justify-between items-center border-b py-2">
                         Disket (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">10</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="disket">Comprar</button>
                     </li>
-                    <li id="cd" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="cd" class="flex justify-between items-center border-b py-2">
                         CD (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">20</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="cd">Comprar</button>
                     </li>
-                    <li id="dvd" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="dvd" class="flex justify-between items-center border-b py-2">
                         DVD (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">30</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="dvd">Comprar</button>
                     </li>
-                    <li id="pendrive" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="pendrive" class="flex justify-between items-center border-b py-2">
                         Pendrive (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">50</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="pendrive">Comprar</button>
                     </li>
-                    <li id="hd" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="hd" class="flex justify-between items-center border-b py-2">
                         HD (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">100</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="hd">Comprar</button>
                     </li>
-                    <li id="ram" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="ram" class="flex justify-between items-center border-b py-2">
                         RAM (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">80</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="ram">Comprar</button>
                     </li>
-                    <li id="ssd" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="ssd" class="flex justify-between items-center border-b py-2">
                         SSD (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">120</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="ssd">Comprar</button>
                     </li>
-                    <li id="internet" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="internet" class="flex justify-between items-center border-b py-2">
                         Internet (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">200</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="internet">Comprar</button>
                     </li>
-                    <li id="mainframe" class="flex justify-between items-center border-b py-2 mb-2">
+                    <li id="mainframe" class="flex justify-between items-center border-b py-2">
                         Mainframe (Quantidade: <span class="quantity font-bold">0</span>, Valor: <span class="value font-bold">500</span>)
                         <button class="buy-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700" data-item="mainframe">Comprar</button>
                     </li>
                 </ul>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="bg-blue-700 text-white p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Clicker Game. Todos os direitos reservados.</p>
+            <p>Contato: <a href="mailto:contato@clickergame.com" class="underline">contato@clickergame.com</a></p>
+        </div>
+    </footer>
+
     <script>
         document.getElementById('change-title-button').addEventListener('click', function () {
             var newTitle = document.getElementById('new-game-title').value;
