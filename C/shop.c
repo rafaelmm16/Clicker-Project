@@ -1,139 +1,45 @@
 #include "shop.h"
-#include <stdio.h>
 
-void initialize_shop(Upgrades *upgrades, Multipliers *multipliers, Prices *prices) {
-    // Inicializa a quantidade de cada upgrade para 0
-    upgrades->disket = 0;
-    upgrades->cd = 0;
-    upgrades->dvd = 0;
-    upgrades->pendrive = 0;
-    upgrades->hd = 0;
-    upgrades->ram = 0;
-    upgrades->internet = 0;
-    upgrades->mainfraime = 0;
+void initialize_shop(Shop *shop) {
+    const UpgradeItem defaults[NUM_UPGRADES] = {
+        { "Disquete",    0,    2.0,  0.100 },
+        { "CD",          0,  100.0,  0.250 },
+        { "DVD",         0,  200.0,  0.500 },
+        { "Pendrive",    0,  500.0,  1.000 },
+        { "HD",          0, 1024.0,  2.048 },
+        { "Memória RAM", 0, 2048.0,  4.096 },
+        { "Internet",    0, 4096.0,  8.192 },
+        { "Mainframe",   0, 8192.0, 16.384 }
+    };
 
-    // Inicializa os multiplicadores de cada item
-    multipliers->disket = 0.15;
-    multipliers->cd = 0.100;
-    multipliers->dvd = 0.200;
-    multipliers->pendrive = 0.500;
-    multipliers->hd = 1.024;      // Ajustado de 0.1024 para um valor mais impactante
-    multipliers->ram = 2.048;      // Ajustado de 0.2048
-    multipliers->internet = 4.096;  // Ajustado de 0.4096
-    multipliers->mainfraime = 8.192; // Ajustado de 0.8192
-
-    // Inicializa os preços base de cada item
-    prices->disket = 2;
-    prices->cd = 100;
-    prices->dvd = 200;
-    prices->pendrive = 500;
-    prices->hd = 1024;
-    prices->ram = 2048;
-    prices->internet = 4096;
-    prices->mainfraime = 8192;
+    for (int i = 0; i < NUM_UPGRADES; i++) {
+        shop->items[i] = defaults[i];
+    }
 }
 
-void buy_upgrade(Player *player, Upgrades *upgrades, Multipliers *multipliers, Prices *prices, int upgrade_choice, float *aplicar) {
-    // Usamos switch para tratar as diferentes opções de compra
-    switch (upgrade_choice) {
-        case 1: // Disket
-            if (player->bitps >= prices->disket) {
-                player->bitps -= prices->disket;
-                upgrades->disket++;
-                *aplicar += multipliers->disket;
-                prices->disket *= 1.15; // Aumentar o preço para a próxima compra
-                printf("\nComprou Disket! Total: %d\n", upgrades->disket);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
+double calculate_total_bonus(const Shop *shop) {
+    double total = 0.0;
+    for (int i = 0; i < NUM_UPGRADES; i++) {
+        total += shop->items[i].quantidade * shop->items[i].multiplicador;
+    }
+    return total;
+}
 
-        case 2: // CD
-            if (player->bitps >= prices->cd) {
-                player->bitps -= prices->cd;
-                upgrades->cd++;
-                *aplicar += multipliers->cd;
-                prices->cd *= 1.15;
-                printf("\nComprou CD! Total: %d\n", upgrades->cd);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
+void buy_upgrade(Player *player, Shop *shop, int upgrade_choice, double *aplicar) {
+    if (upgrade_choice < 1 || upgrade_choice > NUM_UPGRADES) {
+        printf("\nOpção de compra inválida!\n");
+        return;
+    }
 
-        case 3: // DVD
-            if (player->bitps >= prices->dvd) {
-                player->bitps -= prices->dvd;
-                upgrades->dvd++;
-                *aplicar += multipliers->dvd;
-                prices->dvd *= 1.15;
-                printf("\nComprou DVD! Total: %d\n", upgrades->dvd);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
+    UpgradeItem *item = &shop->items[upgrade_choice - 1];
 
-        case 4: // Pendrive
-            if (player->bitps >= prices->pendrive) {
-                player->bitps -= prices->pendrive;
-                upgrades->pendrive++;
-                *aplicar += multipliers->pendrive;
-                prices->pendrive *= 1.15;
-                printf("\nComprou Pendrive! Total: %d\n", upgrades->pendrive);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
-
-        case 5: // HD
-            if (player->bitps >= prices->hd) {
-                player->bitps -= prices->hd;
-                upgrades->hd++;
-                *aplicar += multipliers->hd;
-                prices->hd *= 1.15;
-                printf("\nComprou HD! Total: %d\n", upgrades->hd);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
-
-        case 6: // Mémoria Ram
-            if (player->bitps >= prices->ram) {
-                player->bitps -= prices->ram;
-                upgrades->ram++;
-                *aplicar += multipliers->ram;
-                prices->ram *= 1.15;
-                printf("\nComprou Mémoria Ram! Total: %d\n", upgrades->ram);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
-
-        case 7: // Internet
-            if (player->bitps >= prices->internet) {
-                player->bitps -= prices->internet;
-                upgrades->internet++;
-                *aplicar += multipliers->internet;
-                prices->internet *= 1.15;
-                printf("\nComprou Internet! Total: %d\n", upgrades->internet);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
-
-        case 8: // Mainframe
-            if (player->bitps >= prices->mainfraime) {
-                player->bitps -= prices->mainfraime;
-                upgrades->mainfraime++;
-                *aplicar += multipliers->mainfraime;
-                prices->mainfraime *= 1.15;
-                printf("\nComprou Mainframe! Total: %d\n", upgrades->mainfraime);
-            } else {
-                printf("\nBits insuficientes!\n");
-            }
-            break;
-
-        default:
-            printf("\nOpção de compra inválida!\n");
-            break;
+    if (player->bits >= item->preco) {
+        player->bits -= item->preco;
+        item->quantidade++;
+        *aplicar += item->multiplicador;
+        item->preco *= PRICE_GROWTH_RATE;
+        printf("\nComprou %s! Total: %d\n", item->nome, item->quantidade);
+    } else {
+        printf("\nBits insuficientes! Você precisa de %.2f Bits.\n", item->preco);
     }
 }

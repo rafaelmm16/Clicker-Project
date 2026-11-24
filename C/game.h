@@ -3,8 +3,9 @@
 
 #include "clicker.h"
 
-void run_clicker(Player *player, float *aplicar);
-void run_shop(Player *player, Upgrades *upgrades, Multipliers *multipliers, Prices *prices, float *aplicar);
-void show_ascension(Player *player);
+void run_clicker(Player *player, const Shop *shop, double aplicar);
+void run_shop(Player *player, Shop *shop, double *aplicar);
+void run_ascension(Player *player, Shop *shop, double *aplicar);
+void show_stats_and_achievements(const Player *player, const Shop *shop, double aplicar);
 
 #endif /* GAME_H */

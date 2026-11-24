@@ -1,56 +1,67 @@
-// main.c
-
 #include "clicker.h"
-#include "player.h"
-#include "ui.h"
-#include "shop.h"
 #include "game.h"
+#include "player.h"
 #include "save_load.h"
+#include "shop.h"
+#include "ui.h"
 
-int main() {
-    setlocale(LC_ALL, "");
+int main(void) {
+    setup_console();
 
     Player player;
-    Upgrades upgrades;
-    Multipliers multipliers; // Multipliers não precisa ser salvo, pois é recalculado
-    Prices prices;
-
-    float aplicar = 0.0;
+    Shop shop;
+    double aplicar = 0.0;
     int choose = 0;
 
-    // Tenta carregar o jogo. Se não houver save, inicializa um novo jogo.
-    if (!load_game(&player, &upgrades, &prices, &aplicar)) {
-        initialize_player(&player);
-        initialize_shop(&upgrades, &multipliers, &prices);
+    // Inicializa sempre jogador e loja (garante nomes e multiplicadores válidos)
+    initialize_player(&player);
+    initialize_shop(&shop);
+
+    // Tenta carregar o jogo. Se não houver save válido, pede o nome do PC.
+    if (load_game(&player, &shop, &aplicar)) {
+        wait_for_enter();
+    } else {
         set_player_name(&player);
     }
 
     do {
         clear_screen();
         print_main_menu();
-        scanf("%d", &choose);
+
+        if (!read_int("Escolha uma opção: ", &choose)) {
+            if (feof(stdin)) {
+                break;
+            }
+            printf("\nOpção inválida!\n");
+            wait_for_enter();
+            continue;
+        }
 
         switch (choose) {
             case 1:
-                run_clicker(&player, &aplicar);
+                run_clicker(&player, &shop, aplicar);
                 break;
             case 2:
-                run_shop(&player, &upgrades, &multipliers, &prices, &aplicar);
+                run_shop(&player, &shop, &aplicar);
                 break;
             case 3:
-                show_ascension(&player);
+                run_ascension(&player, &shop, &aplicar);
                 break;
             case 4:
-                printf("Saindo sem salvar...\n");
+                show_stats_and_achievements(&player, &shop, aplicar);
                 break;
             case 5:
-                save_game(&player, &upgrades, &prices, &aplicar);
+                printf("Saindo sem salvar...\n");
+                break;
+            case 6:
+                save_game(&player, &shop, aplicar);
                 break;
             default:
-                printf("Opção inválida!\n");
+                printf("\nOpção inválida!\n");
+                wait_for_enter();
                 break;
         }
-    } while (choose != 4 && choose != 5); // MODIFICADO para sair em ambas as opções
+    } while (choose != 5 && choose != 6);
 
     return 0;
 }
