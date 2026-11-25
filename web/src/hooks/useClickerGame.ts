@@ -16,10 +16,16 @@ import {
   evaluateAchievements,
   formatNumber,
   GameState,
-  getAutoClicksPerSecond,
+  getAutoCritChance,
   getBitsPerClick,
   getBulkPurchaseInfo,
+  getClicksPerManualAction,
+  getComboConfig,
+  getComboMultiplier,
   getCritConfig,
+  getEffectiveAutoClicksPerSecond,
+  getEmpConfig,
+  getHoldClickIntervalMs,
   getPrestigeMultiplier,
   getShopDiscountMultiplier,
   hasPrestigeSkill,
@@ -35,6 +41,7 @@ import {
   playAscendSound,
   playBuySound,
   playClickSound,
+  playEmpSound,
   playEventSound,
   playOverclockSound,
 } from "@/lib/sound";
@@ -141,24 +148,43 @@ export function useClickerGame() {
   const [floatingGains, setFloatingGains] = useState<FloatingGain[]>([]);
   const [lastBitChar, setLastBitChar] = useState<"0" | "1">("1");
 
-  // Mecânicas temporárias de gameplay (Overclock, Frenesi e Eventos)
+  // Mecânicas temporárias de gameplay (Overclock, Frenesi, Combo, Pulso EMP e Eventos)
   const [overclockCharge, setOverclockCharge] = useState(0);
   const [overclockSecondsLeft, setOverclockSecondsLeft] = useState(0);
   const [frenzySecondsLeft, setFrenzySecondsLeft] = useState(0);
+  const [comboCount, setComboCount] = useState(0);
+  const [empCooldownLeft, setEmpCooldownLeft] = useState(0);
+  const [empSurgeSecondsLeft, setEmpSurgeSecondsLeft] = useState(0);
   const [activeEvent, setActiveEvent] = useState<CyberEvent | null>(null);
 
   const overclockSecRef = useRef(0);
   const frenzySecRef = useRef(0);
   const overclockChargeRef = useRef(0);
+  const comboCountRef = useRef(0);
+  const comboTimeoutRef = useRef<number | null>(null);
+  const empCooldownRef = useRef(0);
+  const empSurgeRef = useRef(0);
+  const autoClickAccRef = useRef(0);
+  const holdTimerRef = useRef<number | null>(null);
   const nextIdRef = useRef(1);
 
+  const comboConfig = getComboConfig(state);
+  const comboMultiplier = getComboMultiplier(comboCount, comboConfig.maxMultiplier);
+  const empConfig = getEmpConfig(state);
+
   const activeTempMultiplier =
-    (overclockSecondsLeft > 0 ? 2 : 1) * (frenzySecondsLeft > 0 ? 5 : 1);
+    (overclockSecondsLeft > 0 ? 2 : 1) *
+    (frenzySecondsLeft > 0 ? 5 : 1) *
+    comboMultiplier;
 
   const getCurrentTempMultiplier = useCallback(() => {
+    const currentGame = getClientSnapshot().game;
+    const cfg = getComboConfig(currentGame);
+    const cMult = getComboMultiplier(comboCountRef.current, cfg.maxMultiplier);
     return (
       (overclockSecRef.current > 0 ? 2 : 1) *
-      (frenzySecRef.current > 0 ? 5 : 1)
+      (frenzySecRef.current > 0 ? 5 : 1) *
+      cMult
     );
   }, []);
 
@@ -183,19 +209,49 @@ export function useClickerGame() {
       options?: {
         coords?: { x: number; y: number };
         manual?: boolean;
+        forceCrit?: boolean;
+        empUsed?: boolean;
       }
     ) => {
       if (clickCount <= 0) return;
 
       const manual = options?.manual ?? false;
       const prev = getClientSnapshot().game;
+
+      // Atualiza Combo em cliques manuais
+      let nextMaxCombo = prev.maxCombo;
+      if (manual) {
+        comboCountRef.current += 1;
+        setComboCount(comboCountRef.current);
+        nextMaxCombo = Math.max(prev.maxCombo, comboCountRef.current);
+
+        if (comboTimeoutRef.current !== null) {
+          window.clearTimeout(comboTimeoutRef.current);
+        }
+        const { decayMs } = getComboConfig(prev);
+        comboTimeoutRef.current = window.setTimeout(() => {
+          comboCountRef.current = 0;
+          setComboCount(0);
+          comboTimeoutRef.current = null;
+        }, decayMs);
+      }
+
       const tempMult = getCurrentTempMultiplier();
 
+      const critCfg = getCritConfig(prev);
       let isCrit = false;
       let critMult = 1;
-      if (manual) {
-        const critCfg = getCritConfig(prev);
-        if (Math.random() < critCfg.chance) {
+      if (options?.forceCrit) {
+        isCrit = true;
+        critMult = critCfg.multiplier;
+      } else if (manual) {
+        if (empSurgeRef.current > 0 || Math.random() < critCfg.chance) {
+          isCrit = true;
+          critMult = critCfg.multiplier;
+        }
+      } else {
+        const autoCritChance = getAutoCritChance(prev);
+        if (autoCritChance > 0 && Math.random() < autoCritChance) {
           isCrit = true;
           critMult = critCfg.multiplier;
         }
@@ -241,6 +297,8 @@ export function useClickerGame() {
         totalBitsEarned: prev.totalBitsEarned + gain,
         critCount: prev.critCount + (isCrit ? 1 : 0),
         overclockCount: prev.overclockCount + (triggeredOverclock ? 1 : 0),
+        maxCombo: nextMaxCombo,
+        empCount: prev.empCount + (options?.empUsed ? 1 : 0),
       };
 
       const { nextAchievements, newlyUnlocked } = evaluateAchievements(draft);
@@ -297,20 +355,89 @@ export function useClickerGame() {
 
   const handleClick = useCallback(
     (coords?: { x: number; y: number }) => {
-      applyClicks(1, { coords, manual: true });
+      const prev = getClientSnapshot().game;
+      const clicks = getClicksPerManualAction(prev);
+      applyClicks(clicks, { coords, manual: true });
     },
     [applyClicks]
   );
 
-  // Tick de 1s: Auto-Clicker + contagem regressiva de buffs (Overclock / Frenesi)
+  const stopHoldClick = useCallback(() => {
+    if (holdTimerRef.current !== null) {
+      window.clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+  }, []);
+
+  const startHoldClick = useCallback(
+    (coords?: { x: number; y: number }) => {
+      stopHoldClick();
+      const scheduleTick = () => {
+        const currentGame = getClientSnapshot().game;
+        const intervalMs = getHoldClickIntervalMs(currentGame);
+        holdTimerRef.current = window.setTimeout(() => {
+          handleClick(coords);
+          scheduleTick();
+        }, intervalMs);
+      };
+      scheduleTick();
+    },
+    [handleClick, stopHoldClick]
+  );
+
+  useEffect(() => stopHoldClick, [stopHoldClick]);
+
+  const triggerEmp = useCallback(() => {
+    if (empCooldownRef.current > 0) return;
+    const prev = getClientSnapshot().game;
+    const cfg = getEmpConfig(prev);
+
+    empCooldownRef.current = cfg.cooldownSec;
+    setEmpCooldownLeft(cfg.cooldownSec);
+    empSurgeRef.current = cfg.surgeDurationSec;
+    setEmpSurgeSecondsLeft(cfg.surgeDurationSec);
+
+    if (prev.soundEnabled) {
+      playEmpSound();
+    }
+
+    pushToast(
+      "PULSO EMP DISPARADO!",
+      `Rajada de ${cfg.burstClicks} cliques críticos + 100% crítico por ${cfg.surgeDurationSec}s!`,
+      "prestige"
+    );
+
+    applyClicks(cfg.burstClicks, {
+      manual: false,
+      forceCrit: true,
+      empUsed: true,
+      coords: { x: 50, y: 35 },
+    });
+  }, [applyClicks, pushToast]);
+
+  // Loop rápido de Auto-Clicker (100ms) escalando com bônus de velocidade
+  useEffect(() => {
+    const fastTimer = window.setInterval(() => {
+      const currentGame = getClientSnapshot().game;
+      const effectiveCps = getEffectiveAutoClicksPerSecond(
+        currentGame.upgrades
+      );
+      if (effectiveCps <= 0) return;
+
+      autoClickAccRef.current += effectiveCps * 0.1;
+      if (autoClickAccRef.current >= 1) {
+        const wholeClicks = Math.floor(autoClickAccRef.current);
+        autoClickAccRef.current -= wholeClicks;
+        applyClicks(wholeClicks, { manual: false });
+      }
+    }, 100);
+
+    return () => window.clearInterval(fastTimer);
+  }, [applyClicks]);
+
+  // Tick de 1s: contagem regressiva de buffs (Overclock / Frenesi / EMP)
   useEffect(() => {
     const timer = window.setInterval(() => {
-      const currentGame = getClientSnapshot().game;
-      const autoClicks = getAutoClicksPerSecond(currentGame.upgrades);
-      if (autoClicks > 0) {
-        applyClicks(autoClicks, { manual: false });
-      }
-
       if (overclockSecRef.current > 0) {
         overclockSecRef.current -= 1;
         setOverclockSecondsLeft(overclockSecRef.current);
@@ -326,10 +453,20 @@ export function useClickerGame() {
         frenzySecRef.current -= 1;
         setFrenzySecondsLeft(frenzySecRef.current);
       }
+
+      if (empCooldownRef.current > 0) {
+        empCooldownRef.current -= 1;
+        setEmpCooldownLeft(empCooldownRef.current);
+      }
+
+      if (empSurgeRef.current > 0) {
+        empSurgeRef.current -= 1;
+        setEmpSurgeSecondsLeft(empSurgeRef.current);
+      }
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [applyClicks]);
+  }, []);
 
   // Spawner de Eventos Aleatórios ("Pacote Criptografado") a cada 35-55s
   useEffect(() => {
@@ -430,11 +567,14 @@ export function useClickerGame() {
       if (e.key === "0" || e.key === "1" || e.code === "Space") {
         e.preventDefault();
         handleClick();
+      } else if (e.key === "e" || e.key === "E") {
+        e.preventDefault();
+        triggerEmp();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [handleClick]);
+  }, [handleClick, triggerEmp]);
 
   const buyUpgrade = useCallback(
     (id: UpgradeId, mode: BuyMode = "1") => {
@@ -584,9 +724,19 @@ export function useClickerGame() {
     overclockSecRef.current = 0;
     frenzySecRef.current = 0;
     overclockChargeRef.current = 0;
+    comboCountRef.current = 0;
+    empCooldownRef.current = 0;
+    empSurgeRef.current = 0;
+    if (comboTimeoutRef.current !== null) {
+      window.clearTimeout(comboTimeoutRef.current);
+      comboTimeoutRef.current = null;
+    }
     setOverclockSecondsLeft(0);
     setFrenzySecondsLeft(0);
     setOverclockCharge(0);
+    setComboCount(0);
+    setEmpCooldownLeft(0);
+    setEmpSurgeSecondsLeft(0);
     setActiveEvent(null);
     commitGameState(createInitialState(), false);
     clearOfflineReport();
@@ -602,9 +752,17 @@ export function useClickerGame() {
     overclockCharge,
     overclockSecondsLeft,
     frenzySecondsLeft,
+    comboCount,
+    comboMultiplier,
+    empCooldownLeft,
+    empCooldownMax: empConfig.cooldownSec,
+    empSurgeSecondsLeft,
     activeTempMultiplier,
     activeEvent,
     handleClick,
+    startHoldClick,
+    stopHoldClick,
+    triggerEmp,
     claimEvent,
     buyUpgrade,
     buyPrestigeSkill,

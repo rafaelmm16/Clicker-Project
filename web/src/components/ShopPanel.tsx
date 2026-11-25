@@ -9,9 +9,17 @@ import {
   Cpu,
   Disc,
   Disc3,
+  FastForward,
+  Gauge,
+  GitFork,
   Globe,
   HardDrive,
+  Infinity as InfinityIcon,
   Layers,
+  MousePointerClick,
+  Network,
+  Orbit,
+  Radar,
   Save,
   Server,
   Usb,
@@ -28,16 +36,24 @@ import {
 const UPGRADE_ICONS: Record<UpgradeId, ComponentType<{ className?: string }>> = {
   disquete: Save,
   autoclicker: Bot,
+  macro_script: MousePointerClick,
   cd: Disc,
   dvd: Disc3,
   pendrive: Usb,
+  turbo_bus: Gauge,
   hd: HardDrive,
   ram: Cpu,
   internet: Globe,
   mainframe: Server,
+  hyper_thread: GitFork,
   gpu_cluster: Layers,
+  clock_multiplier: FastForward,
   quantum_pc: Atom,
   ai_core: BrainCircuit,
+  neural_link: Network,
+  quantum_swarm: Radar,
+  dyson_server: Orbit,
+  singularity_os: InfinityIcon,
 };
 
 interface ShopPanelProps {
@@ -65,7 +81,7 @@ export function ShopPanel({ state, onBuy }: ShopPanelProps) {
             )}
           </div>
           <p className="text-xs text-slate-400">
-            Compre em lote e escale do Disquete até IA Autônoma.
+            Compre em lote e escale do Disquete até a Singularidade OS.
           </p>
         </div>
 
@@ -99,6 +115,8 @@ export function ShopPanel({ state, onBuy }: ShopPanelProps) {
           const canAfford = state.bits >= totalCost;
           const Icon = UPGRADE_ICONS[item.id];
           const isAuto = (item.clicksPerSecond ?? 0) > 0;
+          const isMulti = (item.extraClicksPerManual ?? 0) > 0;
+          const isSpeed = (item.speedBonus ?? 0) > 0;
 
           return (
             <button
@@ -140,6 +158,16 @@ export function ShopPanel({ state, onBuy }: ShopPanelProps) {
                           AUTO
                         </span>
                       )}
+                      {isMulti && (
+                        <span className="rounded border border-amber-400/40 bg-amber-500/15 px-1.5 py-0.2 text-[9px] font-bold tracking-wider text-amber-300 uppercase">
+                          MULTI
+                        </span>
+                      )}
+                      {isSpeed && (
+                        <span className="rounded border border-sky-400/40 bg-sky-500/15 px-1.5 py-0.2 text-[9px] font-bold tracking-wider text-sky-300 uppercase">
+                          VELOC.
+                        </span>
+                      )}
                     </div>
                     <p className="text-[11px] text-slate-400">
                       {item.descricao}
@@ -153,9 +181,21 @@ export function ShopPanel({ state, onBuy }: ShopPanelProps) {
               </div>
 
               <div className="mt-3 flex items-center justify-between border-t border-slate-800/80 pt-2.5 text-xs">
-                {isAuto ? (
+                {isAuto && item.multiplicador > 0 ? (
+                  <span className="font-semibold text-fuchsia-300">
+                    +{formatNumber(item.multiplicador, 0)}/clique · +{item.clicksPerSecond}/s
+                  </span>
+                ) : isAuto ? (
                   <span className="font-semibold text-cyan-300">
                     +{item.clicksPerSecond} clique/s
+                  </span>
+                ) : isMulti ? (
+                  <span className="font-semibold text-amber-300">
+                    +{item.extraClicksPerManual} clique(s)/ação
+                  </span>
+                ) : isSpeed ? (
+                  <span className="font-semibold text-sky-300">
+                    +{Math.round((item.speedBonus ?? 0) * 100)}% vel. auto
                   </span>
                 ) : (
                   <span className="font-semibold text-emerald-400">

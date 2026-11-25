@@ -10,16 +10,24 @@ export type BuyMode = "1" | "10" | "max";
 export type UpgradeId =
   | "disquete"
   | "autoclicker"
+  | "macro_script"
   | "cd"
   | "dvd"
   | "pendrive"
+  | "turbo_bus"
   | "hd"
   | "ram"
   | "internet"
   | "mainframe"
+  | "hyper_thread"
   | "gpu_cluster"
+  | "clock_multiplier"
   | "quantum_pc"
-  | "ai_core";
+  | "ai_core"
+  | "neural_link"
+  | "quantum_swarm"
+  | "dyson_server"
+  | "singularity_os";
 
 export interface UpgradeItem {
   id: UpgradeId;
@@ -30,13 +38,19 @@ export interface UpgradeItem {
   preco: number;
   multiplicador: number;
   clicksPerSecond?: number;
+  extraClicksPerManual?: number;
+  speedBonus?: number;
 }
 
 export type PrestigeSkillId =
   | "start_auto"
   | "shop_discount"
   | "crit_mastery"
-  | "offline_boost";
+  | "offline_boost"
+  | "combo_mastery"
+  | "auto_crit"
+  | "emp_overdrive"
+  | "rapid_fire";
 
 export interface PrestigeSkillDef {
   id: PrestigeSkillId;
@@ -52,12 +66,16 @@ export type AchievementId =
   | "ten_upgrades"
   | "hundred_bits"
   | "kilobit"
+  | "million_bits"
   | "first_ascension"
   | "mainframe_master"
   | "crit_hit"
   | "overclock_mode"
   | "glitch_hunter"
-  | "quantum_era";
+  | "quantum_era"
+  | "combo_king"
+  | "emp_master"
+  | "singularity_era";
 
 export interface AchievementDef {
   id: AchievementId;
@@ -94,6 +112,8 @@ export interface GameState {
   critCount: number;
   overclockCount: number;
   glitchesCaught: number;
+  maxCombo: number;
+  empCount: number;
 }
 
 export const PRESTIGE_SKILLS: PrestigeSkillDef[] = [
@@ -120,6 +140,30 @@ export const PRESTIGE_SKILLS: PrestigeSkillDef[] = [
     nome: "Mineração Offline",
     descricao: "Aumenta a eficiência da produção offline de 50% para 100%.",
     custo: 1,
+  },
+  {
+    id: "combo_mastery",
+    nome: "Mestre do Combo",
+    descricao: "Combo máximo sobe para 3.0x e demora o dobro do tempo para expirar.",
+    custo: 2,
+  },
+  {
+    id: "auto_crit",
+    nome: "Bots Críticos",
+    descricao: "Cliques automáticos passam a ter metade da sua chance de crítico.",
+    custo: 3,
+  },
+  {
+    id: "emp_overdrive",
+    nome: "Pulso Otimizado",
+    descricao: "Reduz cooldown do Pulso EMP para 30s e dobra a duração do crítico garantido.",
+    custo: 2,
+  },
+  {
+    id: "rapid_fire",
+    nome: "Disparo Contínuo",
+    descricao: "Dobra a velocidade ao segurar clique/tecla e adiciona +2 cliques por ação manual.",
+    custo: 2,
   },
 ];
 
@@ -184,6 +228,26 @@ export const ACHIEVEMENT_DEFS: AchievementDef[] = [
     titulo: "Era Quântica",
     descricao: "Compre pelo menos 1 PC Quântico.",
   },
+  {
+    id: "million_bits",
+    titulo: "Megabit",
+    descricao: "Acumule 1.000.000 de Bits no total.",
+  },
+  {
+    id: "combo_king",
+    titulo: "Rei do Combo",
+    descricao: "Alcance uma sequência de 50 cliques em combo.",
+  },
+  {
+    id: "emp_master",
+    titulo: "Pulso Eletromagnético",
+    descricao: "Dispare o Pulso EMP pela primeira vez.",
+  },
+  {
+    id: "singularity_era",
+    titulo: "Singularidade",
+    descricao: "Compre pelo menos 1 Singularidade OS.",
+  },
 ];
 
 export const PC_TIERS: PcTier[] = [
@@ -211,6 +275,16 @@ export const PC_TIERS: PcTier[] = [
     nome: "Núcleo Quântico",
     minBits: 500_000,
     badgeClass: "border-amber-400/60 bg-amber-500/15 text-amber-300",
+  },
+  {
+    nome: "Singularidade Digital",
+    minBits: 5_000_000,
+    badgeClass: "border-fuchsia-400/60 bg-fuchsia-500/15 text-fuchsia-300",
+  },
+  {
+    nome: "Matriz Cósmica",
+    minBits: 50_000_000,
+    badgeClass: "border-rose-400/60 bg-rose-500/15 text-rose-300",
   },
 ];
 
@@ -246,6 +320,16 @@ export function createInitialUpgrades(freeAutoClicker = false): UpgradeItem[] {
       clicksPerSecond: 1,
     },
     {
+      id: "macro_script",
+      nome: "Macro de Clique",
+      descricao: "Executa +1 clique extra a cada clique manual.",
+      quantidade: 0,
+      precoBase: 250,
+      preco: 250,
+      multiplicador: 0,
+      extraClicksPerManual: 1,
+    },
+    {
       id: "cd",
       nome: "CD",
       descricao: "Disco óptico clássico de 700 MB.",
@@ -271,6 +355,16 @@ export function createInitialUpgrades(freeAutoClicker = false): UpgradeItem[] {
       precoBase: 500,
       preco: 500,
       multiplicador: 1.0,
+    },
+    {
+      id: "turbo_bus",
+      nome: "Barramento Turbo",
+      descricao: "Acelera em +15% a velocidade de todos os Auto-Clickers.",
+      quantidade: 0,
+      precoBase: 1500,
+      preco: 1500,
+      multiplicador: 0,
+      speedBonus: 0.15,
     },
     {
       id: "hd",
@@ -309,6 +403,16 @@ export function createInitialUpgrades(freeAutoClicker = false): UpgradeItem[] {
       multiplicador: 16.384,
     },
     {
+      id: "hyper_thread",
+      nome: "Hyper-Threading",
+      descricao: "Paralelismo de hardware: +3 cliques extras por clique manual.",
+      quantidade: 0,
+      precoBase: 25000,
+      preco: 25000,
+      multiplicador: 0,
+      extraClicksPerManual: 3,
+    },
+    {
       id: "gpu_cluster",
       nome: "Cluster GPU",
       descricao: "Centenas de núcleos paralelos minerando Bits em rajada.",
@@ -316,6 +420,16 @@ export function createInitialUpgrades(freeAutoClicker = false): UpgradeItem[] {
       precoBase: 32768,
       preco: 32768,
       multiplicador: 65.536,
+    },
+    {
+      id: "clock_multiplier",
+      nome: "Multiplicador Clock",
+      descricao: "Overclock de barramento: +25% de velocidade nos Auto-Clickers.",
+      quantidade: 0,
+      precoBase: 120000,
+      preco: 120000,
+      multiplicador: 0,
+      speedBonus: 0.25,
     },
     {
       id: "quantum_pc",
@@ -335,6 +449,44 @@ export function createInitialUpgrades(freeAutoClicker = false): UpgradeItem[] {
       preco: 524288,
       multiplicador: 0,
       clicksPerSecond: 5,
+    },
+    {
+      id: "neural_link",
+      nome: "Link Neural",
+      descricao: "Interface cérebro-máquina que amplifica cada pulso elétrico.",
+      quantidade: 0,
+      precoBase: 1048576,
+      preco: 1048576,
+      multiplicador: 1024,
+    },
+    {
+      id: "quantum_swarm",
+      nome: "Enxame Quântico",
+      descricao: "Enxame de bots quânticos executando +15 cliques/s.",
+      quantidade: 0,
+      precoBase: 4194304,
+      preco: 4194304,
+      multiplicador: 0,
+      clicksPerSecond: 15,
+    },
+    {
+      id: "dyson_server",
+      nome: "Servidor Dyson",
+      descricao: "Megaestrutura orbital convertendo energia estelar em Bits.",
+      quantidade: 0,
+      precoBase: 16777216,
+      preco: 16777216,
+      multiplicador: 4096,
+    },
+    {
+      id: "singularity_os",
+      nome: "Singularidade OS",
+      descricao: "Sistema autoconsciente: +16.384/clique e +30 cliques/s.",
+      quantidade: 0,
+      precoBase: 67108864,
+      preco: 67108864,
+      multiplicador: 16384,
+      clicksPerSecond: 30,
     },
   ];
 }
@@ -357,6 +509,8 @@ export function createInitialState(nome = "CYBER-PC"): GameState {
     critCount: 0,
     overclockCount: 0,
     glitchesCaught: 0,
+    maxCombo: 0,
+    empCount: 0,
   };
 }
 
@@ -381,6 +535,42 @@ export function getCritConfig(state: Pick<GameState, "prestigeSkills">): {
     return { chance: 0.15, multiplier: 5 };
   }
   return { chance: 0.05, multiplier: 3 };
+}
+
+export function getAutoCritChance(
+  state: Pick<GameState, "prestigeSkills">
+): number {
+  if (!hasPrestigeSkill(state, "auto_crit")) return 0;
+  return getCritConfig(state).chance * 0.5;
+}
+
+export function getComboConfig(state: Pick<GameState, "prestigeSkills">): {
+  maxMultiplier: number;
+  decayMs: number;
+} {
+  if (hasPrestigeSkill(state, "combo_mastery")) {
+    return { maxMultiplier: 3.0, decayMs: 3600 };
+  }
+  return { maxMultiplier: 2.0, decayMs: 1800 };
+}
+
+export function getComboMultiplier(
+  comboCount: number,
+  maxMultiplier: number
+): number {
+  const bonus = Math.floor(Math.max(0, comboCount) / 10) * 0.1;
+  return Math.min(maxMultiplier, Number((1 + bonus).toFixed(2)));
+}
+
+export function getEmpConfig(state: Pick<GameState, "prestigeSkills">): {
+  cooldownSec: number;
+  surgeDurationSec: number;
+  burstClicks: number;
+} {
+  if (hasPrestigeSkill(state, "emp_overdrive")) {
+    return { cooldownSec: 30, surgeDurationSec: 10, burstClicks: 25 };
+  }
+  return { cooldownSec: 45, surgeDurationSec: 5, burstClicks: 20 };
 }
 
 export function getPrestigeMultiplier(prestigeLevel: number): number {
@@ -409,12 +599,45 @@ export function getAutoClicksPerSecond(upgrades: UpgradeItem[]): number {
   );
 }
 
+export function getAutoSpeedMultiplier(upgrades: UpgradeItem[]): number {
+  const bonus = upgrades.reduce(
+    (sum, item) => sum + item.quantidade * (item.speedBonus ?? 0),
+    0
+  );
+  return 1 + bonus;
+}
+
+export function getEffectiveAutoClicksPerSecond(
+  upgrades: UpgradeItem[]
+): number {
+  return getAutoClicksPerSecond(upgrades) * getAutoSpeedMultiplier(upgrades);
+}
+
+export function getClicksPerManualAction(
+  state: Pick<GameState, "upgrades" | "prestigeSkills">
+): number {
+  const extraFromUpgrades = state.upgrades.reduce(
+    (sum, item) => sum + item.quantidade * (item.extraClicksPerManual ?? 0),
+    0
+  );
+  const extraFromSkill = hasPrestigeSkill(state, "rapid_fire") ? 2 : 0;
+  return 1 + extraFromUpgrades + extraFromSkill;
+}
+
+export function getHoldClickIntervalMs(
+  state: Pick<GameState, "upgrades" | "prestigeSkills">
+): number {
+  const speedFactor = Math.min(3, getAutoSpeedMultiplier(state.upgrades));
+  const skillFactor = hasPrestigeSkill(state, "rapid_fire") ? 2 : 1;
+  return Math.max(35, Math.round(140 / (speedFactor * skillFactor)));
+}
+
 export function getBitsPerSecond(
   state: Pick<GameState, "upgrades" | "prestigeLevel">,
   tempMultiplier = 1
 ): number {
   return (
-    getAutoClicksPerSecond(state.upgrades) *
+    getEffectiveAutoClicksPerSecond(state.upgrades) *
     getBitsPerClick(state, tempMultiplier)
   );
 }
@@ -468,6 +691,8 @@ export function evaluateAchievements(state: GameState): {
     (state.upgrades.find((u) => u.id === "mainframe")?.quantidade ?? 0) > 0;
   const hasQuantum =
     (state.upgrades.find((u) => u.id === "quantum_pc")?.quantidade ?? 0) > 0;
+  const hasSingularity =
+    (state.upgrades.find((u) => u.id === "singularity_os")?.quantidade ?? 0) > 0;
 
   const checks: Record<AchievementId, boolean> = {
     first_click: state.totalClicks >= 1,
@@ -476,12 +701,16 @@ export function evaluateAchievements(state: GameState): {
     ten_upgrades: totalUpgrades >= 10,
     hundred_bits: state.totalBitsEarned >= 100,
     kilobit: state.totalBitsEarned >= 1024,
+    million_bits: state.totalBitsEarned >= 1_000_000,
     first_ascension: state.ascensionCount >= 1,
     mainframe_master: hasMainframe,
     crit_hit: state.critCount >= 1,
     overclock_mode: state.overclockCount >= 1,
     glitch_hunter: state.glitchesCaught >= 1,
     quantum_era: hasQuantum,
+    combo_king: state.maxCombo >= 50,
+    emp_master: state.empCount >= 1,
+    singularity_era: hasSingularity,
   };
 
   for (const def of ACHIEVEMENT_DEFS) {
@@ -552,6 +781,8 @@ interface PersistedSave {
   critCount?: number;
   overclockCount?: number;
   glitchesCaught?: number;
+  maxCombo?: number;
+  empCount?: number;
 }
 
 export function saveGameState(state: GameState): boolean {
@@ -580,6 +811,8 @@ export function saveGameState(state: GameState): boolean {
       critCount: state.critCount,
       overclockCount: state.overclockCount,
       glitchesCaught: state.glitchesCaught,
+      maxCombo: state.maxCombo,
+      empCount: state.empCount,
     };
     window.localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(payload));
     return true;
@@ -696,6 +929,14 @@ export function loadGameStateWithOffline(): {
       glitchesCaught:
         typeof parsed.glitchesCaught === "number" && parsed.glitchesCaught >= 0
           ? Math.floor(parsed.glitchesCaught)
+          : 0,
+      maxCombo:
+        typeof parsed.maxCombo === "number" && parsed.maxCombo >= 0
+          ? Math.floor(parsed.maxCombo)
+          : 0,
+      empCount:
+        typeof parsed.empCount === "number" && parsed.empCount >= 0
+          ? Math.floor(parsed.empCount)
           : 0,
     };
 

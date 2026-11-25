@@ -24,9 +24,17 @@ export default function HomePage() {
     overclockCharge,
     overclockSecondsLeft,
     frenzySecondsLeft,
+    comboCount,
+    comboMultiplier,
+    empCooldownLeft,
+    empCooldownMax,
+    empSurgeSecondsLeft,
     activeTempMultiplier,
     activeEvent,
     handleClick,
+    startHoldClick,
+    stopHoldClick,
+    triggerEmp,
     claimEvent,
     buyUpgrade,
     buyPrestigeSkill,
@@ -64,9 +72,17 @@ export default function HomePage() {
             overclockCharge={overclockCharge}
             overclockSecondsLeft={overclockSecondsLeft}
             frenzySecondsLeft={frenzySecondsLeft}
+            comboCount={comboCount}
+            comboMultiplier={comboMultiplier}
+            empCooldownLeft={empCooldownLeft}
+            empCooldownMax={empCooldownMax}
+            empSurgeSecondsLeft={empSurgeSecondsLeft}
             activeTempMultiplier={activeTempMultiplier}
             activeEvent={activeEvent}
             onClickBits={handleClick}
+            onStartHoldClick={startHoldClick}
+            onStopHoldClick={stopHoldClick}
+            onTriggerEmp={triggerEmp}
             onClaimEvent={claimEvent}
             onGoToAscension={() => setActiveTab("ascension")}
           />

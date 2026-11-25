@@ -8,6 +8,7 @@ import {
   getAutoClicksPerSecond,
   getBitsPerClick,
   getBitsPerSecond,
+  getEffectiveAutoClicksPerSecond,
   getPcTier,
   getPrestigeMultiplier,
   getTotalUpgradesOwned,
@@ -22,7 +23,7 @@ export function AchievementsStatsPanel({ state }: AchievementsStatsPanelProps) {
   const unlockedCount = state.achievements.length;
   const totalUpgrades = getTotalUpgradesOwned(state.upgrades);
   const bitsPerClick = getBitsPerClick(state);
-  const autoClicksPerSec = getAutoClicksPerSecond(state.upgrades);
+  const autoClicksPerSec = getEffectiveAutoClicksPerSecond(state.upgrades);
   const bitsPerSec = getBitsPerSecond(state);
   const prestigeMult = getPrestigeMultiplier(state.prestigeLevel);
   const tier = getPcTier(state.totalBitsEarned);
@@ -73,6 +74,12 @@ export function AchievementsStatsPanel({ state }: AchievementsStatsPanelProps) {
             <p className="text-[11px] text-slate-400 uppercase">Críticos / Glitches</p>
             <p className="mt-1 text-lg font-bold text-fuchsia-300">
               {state.critCount} / {state.glitchesCaught}
+            </p>
+          </div>
+          <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-3">
+            <p className="text-[11px] text-slate-400 uppercase">Max Combo / EMP</p>
+            <p className="mt-1 text-lg font-bold text-sky-300">
+              {state.maxCombo}x / {state.empCount}
             </p>
           </div>
           <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-3">
