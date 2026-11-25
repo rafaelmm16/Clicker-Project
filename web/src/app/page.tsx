@@ -10,7 +10,7 @@ import { OfflineModal } from "@/components/OfflineModal";
 import { ShopPanel } from "@/components/ShopPanel";
 import { ToastContainer } from "@/components/ToastContainer";
 import { useClickerGame } from "@/hooks/useClickerGame";
-import { ACHIEVEMENT_DEFS } from "@/lib/game";
+import { ACHIEVEMENT_DEFS, BuyMode } from "@/lib/game";
 
 type ActiveTab = "shop" | "ascension" | "stats";
 
@@ -47,6 +47,7 @@ export default function HomePage() {
   } = useClickerGame();
 
   const [activeTab, setActiveTab] = useState<ActiveTab>("shop");
+  const [buyMode, setBuyMode] = useState<BuyMode>("1");
 
   return (
     <div className="relative flex min-h-screen flex-col">
@@ -141,7 +142,12 @@ export default function HomePage() {
 
           <div className="flex-1 p-5">
             {activeTab === "shop" && (
-              <ShopPanel state={state} onBuy={buyUpgrade} />
+              <ShopPanel
+                state={state}
+                buyMode={buyMode}
+                onChangeBuyMode={setBuyMode}
+                onBuy={buyUpgrade}
+              />
             )}
             {activeTab === "ascension" && (
               <AscensionPanel

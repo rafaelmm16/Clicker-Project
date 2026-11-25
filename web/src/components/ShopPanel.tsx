@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentType } from "react";
-import { useState } from "react";
 import {
   Atom,
   Bot,
@@ -58,11 +57,17 @@ const UPGRADE_ICONS: Record<UpgradeId, ComponentType<{ className?: string }>> = 
 
 interface ShopPanelProps {
   state: GameState;
+  buyMode: BuyMode;
+  onChangeBuyMode: (mode: BuyMode) => void;
   onBuy: (id: UpgradeId, mode: BuyMode) => void;
 }
 
-export function ShopPanel({ state, onBuy }: ShopPanelProps) {
-  const [buyMode, setBuyMode] = useState<BuyMode>("1");
+export function ShopPanel({
+  state,
+  buyMode,
+  onChangeBuyMode,
+  onBuy,
+}: ShopPanelProps) {
   const discount = getShopDiscountMultiplier(state);
   const hasDiscount = discount < 1;
 
@@ -91,7 +96,7 @@ export function ShopPanel({ state, onBuy }: ShopPanelProps) {
             <button
               key={mode}
               type="button"
-              onClick={() => setBuyMode(mode)}
+              onClick={() => onChangeBuyMode(mode)}
               className={`cursor-pointer rounded-md px-2.5 py-1 font-bold uppercase transition ${
                 buyMode === mode
                   ? "bg-emerald-400 text-slate-950"
